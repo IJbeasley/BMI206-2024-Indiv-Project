@@ -27,21 +27,56 @@
 
 #scent_gr_filt = scent_gr[mcols(scent_gr)$]
 
+# load scent gr: 
+
+sig_scent = 0.05
+
+scent_gr = regioneR::toGRanges(readRDS(paste0("output/SCENT/", 
+                                              "500kb_fibroblast_allcvar_part",
+                                             ".rds")
+),
+genome = "hg38")
+
+
+scent_gr_filt = scent_gr[mcols(scent_gr)$boot_basic_p < sig_scent]
+
+eqtl_file_substring = c("commonmind_brain",
+                        "rosmap_brain",
+                        "geuvadis_lcl",
+                        "twinsuk_lcl")
+
+# loading eqtl gr: 
+
+
+for(eqtl_file_name in eqtl_file_substring){
+
 eqtl_gr = regioneR::toGRanges(readRDS(paste0("output/eqtl/", 
-                                    "commonmind_brain",
-                                    "credible_sets.rds")
+                                             eqtl_file_name,
+                                    "_credible_sets.rds")
                             ),
                     genome = "hg38")
+# filter eqtl gr 
 
-eqtl_gr_filt = eqtl_gr[mcols(eqtl_gr)$common_pip > 0.2]
+eqtl_gr_filt = eqtl_gr[mcols(eqtl_gr)$pip > 0.9]
 
-regioneR::numOverlaps(scent_gr, eqtl_gr, count.once = T) 
+#regioneR::numOverlaps(scent_gr, eqtl_gr, count.once = T) 
 # eqtl recall ... 
-regioneR::numOverlaps(eqtl_gr_filt, scent_gr, count.once = T) 
-length(eqtl_gr_filt)
+overlap = regioneR::numOverlaps(eqtl_gr_filt, 
+                      scent_gr_filt, 
+                      count.once = T) 
+n_eqtl = length(eqtl_gr_filt)
 
-regioneR::overlapRegions(eqtl_gr,
-                         scent_gr)
+n_sig_scent = length(scent_gr_filt)
 
-regioneR::overlapRegions(scent_gr,
-                         eqtl_gr)
+message("\n Recalled: ", overlap, 
+        "\n N eQTL: ", n_eqtl, 
+        "\n N scent: ", n_sig_scent,
+        "\n"
+        )
+
+}
+# regioneR::overlapRegions(eqtl_gr,
+#                          scent_gr)
+# 
+# regioneR::overlapRegions(scent_gr,
+#                          eqtl_gr)
