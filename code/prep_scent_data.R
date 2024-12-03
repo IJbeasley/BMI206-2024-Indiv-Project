@@ -4,7 +4,8 @@
 
 #scent_file = data.table::fread("data/SCENT/500kb_fibroblast_allcvar_part.txt")
 
-scent_files_substrings = c("500kb_fibroblast_allcvar_part")
+scent_files_substrings = c("500kb_fibroblast_allcvar_part",
+                           "500kb_Tcell_nocvar_parts")
 
 for(scent_file_name in scent_files_substrings){
   
