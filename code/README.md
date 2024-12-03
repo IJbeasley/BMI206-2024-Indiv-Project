@@ -1,7 +1,7 @@
 
 # Individual Analysis Code 
 
-
+<br>
 
 ## eQTL enrichment steps 
 
@@ -25,6 +25,7 @@ Outputs:
 <b> 3. prep_scent_data.R </b>
 
 Converts output from scent analysis into GenomicRanges objects. 
+This step is also used in the gwas enrichment analysis proceedure. 
 
 Inputs:
 - data/scent/*.txt
@@ -46,7 +47,7 @@ Output:
 <br> 
 <br>
 
-# GWAs enrichment steps 
+## GWAS enrichment steps 
 
 <b> 1. prep_gwas_data.R </b>
 
@@ -54,6 +55,17 @@ Converts relevant association data from the gwas catalog to GenomicRanges Object
 
 Output:
 - output/gwas/*.rds
+
+<b> 3. prep_scent_data.R </b>
+
+Converts output from scent analysis into GenomicRanges objects. 
+This step is also used in the gwas enrichment analysis proceedure. 
+
+Inputs:
+- data/scent/*.txt
+
+Outputs: 
+- output/scent/*.rds
 
 <b> 2. overlap_gwas.R </b> 
 
