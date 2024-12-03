@@ -56,10 +56,10 @@ Converts relevant association data from the gwas catalog to GenomicRanges Object
 Output:
 - output/gwas/*.rds
 
-<b> 3. prep_scent_data.R </b>
+<b> 2. prep_scent_data.R </b>
 
 Converts output from scent analysis into GenomicRanges objects. 
-This step is also used in the gwas enrichment analysis proceedure. 
+This step is also used in the eQTL enrichment analysis proceedure. 
 
 Inputs:
 - data/scent/*.txt
@@ -67,7 +67,7 @@ Inputs:
 Outputs: 
 - output/scent/*.rds
 
-<b> 2. overlap_gwas.R </b> 
+<b> 3. overlap_gwas.R </b> 
 
 Uses the regioneR bioconductor R package to measure the overlap between GWAs hits / variants, and scent-identified enhancers. 
 
