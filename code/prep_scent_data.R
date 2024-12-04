@@ -1,11 +1,10 @@
 
-# Prepare scent files into appropriate Genomic Ranges 
-# convert scent table
+# Prepare scent files into appropriate form
+# and convert scent table to Genomic Ranges 
 
-#scent_file = data.table::fread("data/SCENT/500kb_fibroblast_allcvar_part.txt")
-
-scent_files_substrings = c("500kb_fibroblast_allcvar_part",
-                           "500kb_Tcell_nocvar_parts")
+# what  scent  output to run this for:
+scent_files_substrings = c("500kb_fibroblast_allcvar",
+                           "500kb_Tcell_allcvar")
 
 for(scent_file_name in scent_files_substrings){
   
@@ -17,9 +16,8 @@ scent_file = dtplyr::lazy_dt(
                                        )
                                )
 
-# scent_file = scent_file |> 
-#   dplyr::filter(boot_basic_p < 0.1)
 
+# make columns match bed format
 scent_file = scent_file |> 
   tidyr::separate(col = "peak", 
                   sep  = ":",
@@ -32,6 +30,8 @@ scent_file = scent_file |>
                            "end")
   )
 
+# then make the bed columns at the start of the data.frame
+# so they are correctly read in as chromosome, start and end of each range
 scent_file = scent_file |>
   dplyr::relocate(end) |>
   dplyr::relocate(start) |>
@@ -39,6 +39,7 @@ scent_file = scent_file |>
 
 scent_file = as.data.frame(scent_file)
 
+# now make as genomicRanges
 scent_gr = regioneR::toGRanges(scent_file, 
                                genome = "hg38")
 
