@@ -17,7 +17,7 @@ eqtl_file_substring = c("commonmind_brain",
 )
 
 # pip value threshold to filter our casual/fine-mapped eQTLs by
-sig_eqtl = 0.1
+sig_eqtl = 0.2
 
 ############## permutation numbers for enrichment testing ###################
 
