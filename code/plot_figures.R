@@ -18,6 +18,7 @@ names(eqtl_enrich) =
      "n_sig_scent",
       "sig_scent",
       "sig_eqtl",
+    "scent_tissue",
       "ntimes"
   )
 
@@ -87,6 +88,7 @@ names(gwas_enrich) =
     "n_gwas",
     "n_sig_scent",
     "sig_scent",
+    "scent_tissue",
     "ntimes"
   )
 

@@ -105,6 +105,10 @@ recall_pval = sig_testing$numOverlaps_once$pval
 recall_zscore = sig_testing$numOverlaps_once$zscore
 
 
+scent_tissue = stringr::str_remove(scent_file_name,
+                                    pattern = "500kb_") |>
+                stringr::str_remove(pattern = "_allcvar")
+
 # save summary results from recall: 
 recall_summary_res  = data.frame(
   study = eqtl_file_name,
@@ -116,6 +120,7 @@ recall_summary_res  = data.frame(
   n_sig_scent = n_sig_scent,
   sig_scent = sig_scent,
   sig_eqtl = sig_eqtl,
+  scent_tissue = scent_tissue, 
   ntimes = ntimes
 )
 

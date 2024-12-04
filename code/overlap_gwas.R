@@ -102,6 +102,10 @@ sig_testing = regioneR::permTest(
 recall_pval = sig_testing$numOverlaps_once$pval
 recall_zscore = sig_testing$numOverlaps_once$zscore
 
+scent_tissue = stringr::str_remove(scent_file_name,
+                                   pattern = "500kb_") |>
+  stringr::str_remove(pattern = "_allcvar")
+
 
 # save summary results from recall: 
 recall_summary_res  = data.frame(
@@ -116,6 +120,7 @@ recall_summary_res  = data.frame(
   n_gwas = n_gwas,
   n_sig_scent = n_sig_scent,
   sig_scent = sig_scent,
+  scent_tissue = scent_tissue,
   ntimes = ntimes
 )
 
