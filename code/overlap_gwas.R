@@ -78,7 +78,7 @@ trait = c(mcols(gwas_gr)$'DISEASE/TRAIT')[1]
 
 # Let's now measure scent peak recall of fine-mapped eqtls
 overlap = regioneR::numOverlaps(gwas_gr, 
-                                scent_gr, 
+                                scent_gr_filt, 
                                 count.once = T
                                 )
 

@@ -53,12 +53,10 @@ for(scent_file_name in scent_files_substrings){
   genome = "hg38"
   )
   
-  print("OK")
   scent_gr_filt = scent_gr[mcols(scent_gr)$boot_basic_p < sig_scent]
 
 for(eqtl_file_name in eqtl_file_substring){
   
-  print("OK")
 
 eqtl_gr = regioneR::toGRanges(readRDS(paste0("output/eqtl/", 
                                              eqtl_file_name,
@@ -70,8 +68,6 @@ eqtl_gr = regioneR::toGRanges(readRDS(paste0("output/eqtl/",
 
 # filter eqtl for the most strongly / likely casual variants
 eqtl_gr_filt = eqtl_gr[mcols(eqtl_gr)$pip > sig_eqtl]
-
-print("ok")
 
 # Let's now measure scent peak recall of fine-mapped eqtls
 overlap = regioneR::numOverlaps(eqtl_gr_filt, 
@@ -87,8 +83,6 @@ n_sig_scent = length(scent_gr_filt)
 
 # recall  = tp / p 
 recall = overlap / n_eqtl
-
-print("OK")
 
 sig_testing = regioneR::permTest(
          A=eqtl_gr_filt,

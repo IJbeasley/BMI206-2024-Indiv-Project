@@ -48,8 +48,8 @@ eqtl_enrich = eqtl_enrich |>
 eqtl_enrich |>
   ggplot(aes(y = n_recall, 
              x = study, 
-             group = eqtl_tissue,
-             col = as.factor(sig_scent))) + 
+             group = scent_tissue,
+             col = as.factor(scent_tissue))) + 
   geom_point() + 
   labs(y = "# Recalled \n (Fine-Mapped eQTLs overlapping SCENT enhancers)",
        x = "Study") + 
@@ -62,7 +62,7 @@ eqtl_enrich |>
   ggplot(aes(y = recall_zscore, 
              x = study, 
              group = eqtl_tissue,
-             col = as.factor(sig_scent))) + 
+             col = as.factor(scent_tissue))) + 
   geom_point() + 
   labs(y = "Z-score Recalled \n (Fine-Mapped eQTLs overlapping SCENT enhancers)",
        x = "Study") + 
@@ -70,6 +70,17 @@ eqtl_enrich |>
   scale_colour_brewer(name = "SCENT \nsignifcance \nthreshold", palette = "Dark2") + 
   theme_bw()
 
+eqtl_enrich |>
+  ggplot(aes(y = recall, 
+             x = study, 
+             group = scent_tissue,
+             col = as.factor(scent_tissue))) + 
+  geom_point() + 
+  labs(y = "Recall \n (% Fine-Mapped eQTLs overlapping SCENT enhancers)",
+       x = "Study") +
+  facet_wrap(~eqtl_tissue, scales = "free_x") + 
+  scale_colour_brewer(name = "SCENT \n peak tissue", palette = "Dark2") + 
+  theme_bw()
 
 ###################### Prepare Data for gwas ########################
 
@@ -96,11 +107,11 @@ names(gwas_enrich) =
 gwas_enrich |>
   ggplot(aes(y = n_recall, 
              x = study, 
-             #group = eqtl_tissue,
-             col = as.factor(sig_scent))) + 
+             group = scent_tissue,
+             col = as.factor(scent_tissue))) + 
   geom_point() + 
   labs(y = "# Recalled \n (Bonferroni-significant overlapping SCENT enhancers)",
        x = "Study") + 
   facet_wrap(~trait, scales = "free_x") + 
-  scale_colour_brewer(name = "SCENT \nsignifcance \nthreshold", palette = "Dark2") + 
+  scale_colour_brewer(name = "SCENT tissue", palette = "Dark2") + 
   theme_bw()
