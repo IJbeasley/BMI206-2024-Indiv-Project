@@ -2,25 +2,10 @@
 
 ############# scent gr load + filter ##################
 
-sig_scent = 0.6
+sig_scent = 0.1
 
-scent_gr = regioneR::toGRanges(readRDS(paste0("output/SCENT/",
-                                              "500kb_fibroblast_allcvar_part",
-                                             ".rds"
-                                             )
-                                       ),
-                               genome = "hg38"
-                               )
-
-# scent_gr = regioneR::toGRanges(readRDS(paste0("output/SCENT/", 
-#                                               "500kb_Tcell_nocvar_parts",
-#                                               ".rds"
-# )
-# ),
-# genome = "hg38"
-# )
-
-scent_gr_filt = scent_gr[mcols(scent_gr)$boot_basic_p < sig_scent]
+scent_files_substrings = c("500kb_fibroblast_allcvar",
+                           "500kb_Tcell_allcvar")
 
 ############## testing enrichment significance functions ###################
 
@@ -43,40 +28,6 @@ randomizeRegions_new = function(A, ...) {
   randomizeRegions(A, genome = "hg38", ...)
 }
 
-# set up test - create function to perform bootstrapping
-# different from regioneR::resampleRegions as resampleRegions
-# sets replace = F
-bootstrapRegions <- function(A, 
-                             universe, 
-                             per.chromosome=FALSE, ...) { 
-  
-  if(!hasArg(A)) stop("A is missing")
-  if(!hasArg(universe)) stop("universe is missing")
-  if(!is.logical(per.chromosome)) stop("per.chromosome must be logical")
-  
-  
-  A <- toGRanges(A)
-  universe <- toGRanges(universe)
-  
-  
-  if(per.chromosome){
-    chrResample <- function(chr) {
-      Achr <- A[seqnames(A) == chr]
-      universe.chr <- universe[seqnames(universe) == chr]
-      resample.chr <- universe.chr[sample(1:length(universe.chr), length(Achr))]
-      return(resample.chr)
-    }
-    
-    chr.resampled <- lapply(as.list(seqlevels(A)), chrResample, replace = T)
-    resampled <- do.call(c, chr.resampled)
-    
-  }else{
-    resampled <- universe[sample(1:length(universe), length(A), replace = T)]
-  }
-  
-  return(resampled)
-  
-}
 
 ############### gwas enrichment for loop ############
 
@@ -105,6 +56,18 @@ ra_associations_gr = readRDS("output/gwas/gwas-catalog-associations-RA.rds")
 associations_gr = c(t1d_associations_gr,
                     ra_associations_gr)
 
+for(scent_file_name in scent_files_substrings){
+  
+  scent_file = dtplyr::lazy_dt(
+    data.table::fread(paste0("data/SCENT/",
+                             scent_file_name,
+                             ".txt"
+    )
+    )
+  )
+  
+  scent_gr_filt = scent_gr[mcols(scent_gr)$boot_basic_p < sig_scent]
+
 for(study in gwas_study_accessions){
 
 gwas_gr = associations_gr[mcols(associations_gr)$STUDY_ACCESSION == study]
@@ -128,38 +91,16 @@ n_sig_scent = length(scent_gr_filt)
 # recall  = tp / p 
 recall = overlap / n_gwas
 
+sig_testing = regioneR::permTest(
+         A=gwas_gr,
+         B=scent_gr_filt,
+         ntimes=ntimes,
+         randomize.function=randomizeRegions_hg38, 
+         evaluate.function=numOverlaps_once
+        )
 
-# bootstrapRegions = function(A, ...){
-#   
-#   A <- toGRanges(A)
-#   resampled <- sample(A, size=length(A), replace = TRUE)
-#   return(resampled)
-#   
-# }
-
-############ To be fixed: #####################
-
-# 1. should have universe as all ATAC Peaks ... 
-# 2. use bootstrap regions ... 
-
-# sig_testing = regioneR::permTest(A=eqtl_gr_filt, 
-#          B=scent_gr_filt, 
-#          ntimes=20, 
-#          randomize.function=randomizeRegions_new, #resampleRegions, 
-#         # universe=all, all ATAC 
-#          evaluate.function=numOverlaps_once)
-
-
-# sig_testing = regioneR::permTest(A=gwas_gr,
-#          B=scent_gr_filt,
-#          ntimes=ntimes,
-#          randomize.function=randomizeRegions_new, #resampleRegions,
-#         # universe=all, all ATAC
-#          evaluate.function=numOverlaps_once
-#         )
-
-# recall_pval = sig_testing$numOverlaps_once$pval
-# recall_zscore = sig_testing$numOverlaps_once$zscore
+recall_pval = sig_testing$numOverlaps_once$pval
+recall_zscore = sig_testing$numOverlaps_once$zscore
 
 
 # save summary results from recall: 
@@ -197,4 +138,6 @@ message("\n For study: ", study,
         "\n"
         )
 
+}
+  
 }
