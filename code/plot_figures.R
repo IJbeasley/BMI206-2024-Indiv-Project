@@ -45,45 +45,105 @@ eqtl_enrich = eqtl_enrich |>
 
 ###################### Plot enrichment of eQTLs #####################
 
-eqtl_enrich |>
+
+############# Number Recalled ########################
+{
+  
+  pdf(file = "figures/eqtl_enrich_n_recall.pdf",
+      width=3 *50 / 24.5,
+      height=3* 30 / 24.5)
+  
+  
+
+plot = eqtl_enrich |>
   ggplot(aes(y = n_recall, 
              x = study, 
              group = scent_tissue,
              col = as.factor(scent_tissue))) + 
-  geom_point() + 
-  labs(y = "# Recalled \n (Fine-Mapped eQTLs overlapping SCENT enhancers)",
+  geom_point(size = 5) + 
+  labs(y = "# Recalled \n (Fine-mapped eQTLs)",
        x = "Study") + 
   facet_wrap(~eqtl_tissue, scales = "free_x") + 
-  scale_colour_brewer(name = "SCENT \nsignifcance \nthreshold", palette = "Dark2") + 
-  theme_bw()
+  scale_colour_brewer(name =  "SCENT \npeak tissue", palette = "Dark2") + 
+  theme_bw(base_size = 12) + 
+  theme(       strip.text = element_text(size = rel(1.25)), 
+               legend.text = element_text(size = rel(1.15)),
+               legend.title = element_text(size = rel(1.17))
+  )
+
+print(plot)
 
 
-eqtl_enrich |>
+dev.off()
+  
+}
+
+################ Z-score recalled #######################
+
+{
+  
+  pdf(file = "figures/eqtl_enrich_zscore_recall.pdf",
+      width=3 *50 / 24.5,
+      height=3* 30 / 24.5)
+  
+  
+plot = eqtl_enrich |>
   ggplot(aes(y = recall_zscore, 
              x = study, 
              group = eqtl_tissue,
              col = as.factor(scent_tissue))) + 
-  geom_point() + 
-  labs(y = "Z-score Recalled \n (Fine-Mapped eQTLs overlapping SCENT enhancers)",
+  geom_point(size = 5) + 
+  labs(y = "Z-score for # Recalled \n (Fine-mapped eQTLs)",
        x = "Study") + 
   facet_wrap(~eqtl_tissue, scales = "free_x") + 
-  scale_colour_brewer(name = "SCENT \nsignifcance \nthreshold", palette = "Dark2") + 
-  theme_bw()
+  scale_colour_brewer(name = "SCENT \npeak tissue", palette = "Dark2") + 
+  theme_bw(base_size = 12) + 
+  theme(       strip.text = element_text(size = rel(1.25)), 
+    legend.text = element_text(size = rel(1.15)),
+                legend.title = element_text(size = rel(1.17))
+                )
 
-eqtl_enrich |>
+print(plot)
+
+dev.off()
+  
+} 
+
+################# Proportion Recalled ####################
+
+{
+  
+  pdf(file = "figures/eqtl_enrich_prop_recall.pdf",
+      width=3 *50 / 24.5,
+      height=3* 30 / 24.5)
+  
+plot = eqtl_enrich |>
   ggplot(aes(y = recall, 
              x = study, 
              group = scent_tissue,
              col = as.factor(scent_tissue))) + 
-  geom_point() + 
-  labs(y = "Recall \n (% Fine-Mapped eQTLs overlapping SCENT enhancers)",
+  geom_point(size = 5) + 
+  labs(y = "Recall \n(Fine-mapped eQTLs)",
        x = "Study") +
   facet_wrap(~eqtl_tissue, scales = "free_x") + 
-  scale_colour_brewer(name = "SCENT \n peak tissue", palette = "Dark2") + 
-  theme_bw()
+  scale_colour_brewer(name = "SCENT \npeak tissue", palette = "Dark2") + 
+  theme_bw(base_size = 12) + 
+  theme(       strip.text = element_text(size = rel(1.25)), 
+               legend.text = element_text(size = rel(1.15)),
+               legend.title = element_text(size = rel(1.17))
+  )
+
+
+print(plot) 
+
+
+dev.off()
+
+}
 
 ###################### Prepare Data for gwas ########################
 
+{
 gwas_enrich = data.table::fread("output/enrichment/recall_gwas.tsv")
 
 names(gwas_enrich) = 
@@ -103,15 +163,42 @@ names(gwas_enrich) =
     "ntimes"
   )
 
+}
 
-gwas_enrich |>
+################# Plot gwas enrichment #####################
+
+{
+  
+  pdf(file = "figures/gwas_enrich_n_recall.pdf",
+      width=5 *50 / 24.5,
+      height=3.5* 30 / 24.5)
+  
+
+plot  = gwas_enrich |>
   ggplot(aes(y = n_recall, 
              x = study, 
              group = scent_tissue,
              col = as.factor(scent_tissue))) + 
-  geom_point() + 
-  labs(y = "# Recalled \n (Bonferroni-significant overlapping SCENT enhancers)",
+  geom_point(size = 5) + 
+  labs(y = "# Recalled \n (Genome-wide significant GWAS Variants)",
        x = "Study") + 
   facet_wrap(~trait, scales = "free_x") + 
   scale_colour_brewer(name = "SCENT tissue", palette = "Dark2") + 
-  theme_bw()
+  theme_bw(
+           base_size = 12) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        strip.text = element_text(size = rel(1.35)),
+        legend.text = element_text(size = rel(1.2)),
+        legend.title = element_text(size = rel(1.25))
+        )
+
+print(plot)
+
+
+dev.off()
+  
+  
+}
+
+
+
