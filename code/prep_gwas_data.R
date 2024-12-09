@@ -4,19 +4,22 @@ gwas_associations_files = c("data/gwas/gwas-catalog-associations-T1D.tsv",
 
 study_accessions = 
 c(# T1D
-  "GCST90432067",
-  "GCST90018705",
-  "GCST009916",
+#  "GCST90432067",
+  "GCST90454277", # Zeng - european 
+  "GCST90018705", # Sakaue - east asian
+  "GCST009916", # Onengut-Gumusc African
   "GCST005536",
-  "GCST008377",
-  "GCST90000529",
+  "GCST008377", # Zhu east asian
+  "GCST90000529", #Inshaw European
   # RA
-  "GCST90132223",
-  "GCST90132224",
-  "GCST90132222",
-  "GCST011389",
-  "GCST90258644",
-  "GCST90018690"
+  "GCST90132222", # all Ishigaki 
+  "GCST90132223", # european Ishigaki 
+  "GCST90132224", # east asian Ishigaki 
+
+  "GCST011389", #Kwon  east asian 
+ # "GCST90258644",
+  "GCST90018690", # Sakaue  east asian 
+ "GCST90446530" # Guo
   )
 
 for(associations_file in gwas_associations_files){
