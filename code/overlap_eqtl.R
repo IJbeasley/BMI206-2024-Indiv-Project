@@ -2,7 +2,7 @@
 
 ############# scent gr files ##################
 
-sig_scent = 0.1
+sig_scent = 1
 
 scent_files_substrings = c("500kb_fibroblast_allcvar",
                            "500kb_Tcell_allcvar")
@@ -37,7 +37,7 @@ numOverlaps_once = function(A, B, ...){
 
 # making permutation value for hg38 ... 
 randomizeRegions_hg38 = function(A, ...) {
-  randomizeRegions(A, genome = "hg38", ...)
+  randomizeRegions(A, genome = "hg38", allow.overlaps = F)
 }
 
 ############### eqtl enrichment for loop ############
@@ -127,8 +127,8 @@ data.table::fwrite(recall_summary_res,
 
 
 
-
 message("\n For study: ", eqtl_file_name,
+        "\n Tissue: ",  scent_tissue, " (", scent_file_name, ")",
         "\n pip < ", sig_eqtl, " bootstrap p-value < ", sig_scent,
         "\n Recall: ", round(recall, digits = 2),
         "\n Recalled #n: ", overlap, 

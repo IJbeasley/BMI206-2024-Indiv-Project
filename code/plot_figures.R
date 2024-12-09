@@ -41,10 +41,53 @@ eqtl_enrich = eqtl_enrich |>
               dplyr::mutate(eqtl_tissue = eqtl_tissue_get(study)) |>
               dplyr::mutate(study = eqtl_name_fix(study)) 
 
+
+eqtl_enrich = eqtl_enrich |> 
+              dplyr::mutate(precision = n_recall / n_sig_scent) |> 
+              dplyr::mutate(f1 = 2 / (
+                                      (1/precision) + (1/recall)
+                                      )
+                            )
+
+
+eqtl_enrich = eqtl_enrich |>
+              dplyr::filter(sig_scent < 1)
+
 }
 
 ###################### Plot enrichment of eQTLs #####################
 
+{
+  
+  pdf(file = "figures/eqtl_enrich_f1.pdf",
+      width=3 *50 / 24.5,
+      height=3* 30 / 24.5)
+  
+  
+  
+  plot = eqtl_enrich |>
+    ggplot(aes(y = f1, 
+               x = study, 
+               group = scent_tissue,
+               col = as.factor(scent_tissue))) + 
+    geom_point(size = 5,
+               position = position_dodge(0.75)) +
+    labs(y = "F1",
+         x = "Study") + 
+    facet_wrap(~eqtl_tissue, scales = "free_x") + 
+    scale_colour_brewer(name =  "SCENT \npeak tissue", palette = "Dark2") + 
+    theme_bw(base_size = 12) + 
+    theme(       strip.text = element_text(size = rel(1.25)), 
+                 legend.text = element_text(size = rel(1.15)),
+                 legend.title = element_text(size = rel(1.17))
+    )
+  
+  print(plot)
+  
+  
+  dev.off()
+  
+}
 
 ############# Number Recalled ########################
 {
