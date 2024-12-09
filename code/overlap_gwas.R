@@ -9,7 +9,8 @@ scent_files_substrings = c("500kb_fibroblast_allcvar",
 
 ############## testing enrichment significance functions ###################
 
-library(regioneR)
+library(regioneR, quietly =  T)
+library()
 
 # number of bootstraps
 ntimes = 100
@@ -24,7 +25,7 @@ numOverlaps_once = function(A, B, ...){
 }
 
 # making permutation value for hg38 ... 
-randomizeRegions_new = function(A, ...) {
+randomizeRegions_hg38 = function(A, ...) {
   randomizeRegions(A, genome = "hg38", ...)
 }
 
@@ -58,15 +59,15 @@ associations_gr = c(t1d_associations_gr,
 
 for(scent_file_name in scent_files_substrings){
   
-  scent_file = dtplyr::lazy_dt(
-    data.table::fread(paste0("data/SCENT/",
-                             scent_file_name,
-                             ".txt"
-    )
-    )
+  scent_gr = regioneR::toGRanges(readRDS(paste0("output/SCENT/", 
+                                                scent_file_name,
+                                                ".rds"
+  )
+  ),
+  genome = "hg38"
   )
   
-  scent_gr_filt = scent_gr[mcols(scent_gr)$boot_basic_p < sig_scent]
+  scent_gr_filt =  scent_gr[mcols(scent_gr)$boot_basic_p < sig_scent]
 
 for(study in gwas_study_accessions){
 
