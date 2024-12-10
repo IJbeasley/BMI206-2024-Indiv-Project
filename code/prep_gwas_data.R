@@ -2,13 +2,15 @@ gwas_associations_files = c("data/gwas/gwas-catalog-associations-T1D.tsv",
                             "data/gwas/gwas-catalog-associations-RA.tsv"
                             )
 
+library(dplyr)
+
 study_accessions = 
 c(# T1D
 #  "GCST90432067",
   "GCST90454277", # Zeng - european 
   "GCST90018705", # Sakaue - east asian
   "GCST009916", # Onengut-Gumusc African
-  "GCST005536",
+ # "GCST005536",
   "GCST008377", # Zhu east asian
   "GCST90000529", #Inshaw European
   # RA
@@ -77,12 +79,33 @@ associations  <- associations |>
                                )
   )
 
+
+# fix weird example of	chr6:32772087
+#chrX:78464616
+
+associations  <- associations |> 
+  dplyr::mutate(CHR_POS = dplyr::if_else(
+    SNPS == "chr6:32772087",
+    "32772087",
+    CHR_POS
+  )
+  ) |> 
+  dplyr::mutate(CHR_ID = 
+                  dplyr::if_else(
+                    SNPS == "chr6:32772087",
+                    "6",
+                    CHR_ID
+                  )
+  )
+
+
 # fix weird examples for rsIDs 60681359 & 386399572
 associations  <- associations |>
   dplyr::mutate(
     CHR_POS = dplyr::case_when(
       SNP_ID_CURRENT == "60681359" ~ "69880215",
       SNP_ID_CURRENT == "386399572" ~ "26115952",
+      SNP_ID_CURRENT == "111354118" ~ "30866167",
       TRUE ~ CHR_POS # Preserve original value for other cases
                               )
     ) |>
@@ -90,6 +113,7 @@ associations  <- associations |>
         CHR_ID = dplyr::case_when(
           SNP_ID_CURRENT == "60681359" ~ "18",
           SNP_ID_CURRENT == "386399572" ~ "4",
+          SNP_ID_CURRENT == "111354118" ~ "6",
           TRUE ~ CHR_ID # Preserve original value for other cases
         )
       )
@@ -130,10 +154,17 @@ dplyr::summarise(n_associations = n())
 # by renaming and reordering required columns
 
 associations = associations |> 
-  dplyr::mutate(end = CHR_POS) |>
-  dplyr::rename(start = CHR_POS,
-                chrom = CHR_ID
+  dplyr::mutate(end = CHR_POS,
+                start = CHR_POS) |>
+  dplyr::rename(chrom = CHR_ID
                 )
+
+associations = associations |> 
+  dplyr::mutate(end = dplyr::case_when(SNP_ID_CURRENT == "111354118" ~ 30866173,
+                                       start == "32772087" ~ 32772087,
+                                       start == "78464616" ~ 78464616,
+                                     TRUE ~ end))
+  
 
 associations = associations |>
 dplyr::relocate(end) |>
