@@ -6,20 +6,16 @@ library(dplyr)
 
 study_accessions = 
 c(# T1D
-#  "GCST90432067",
   "GCST90454277", # Zeng - european 
   "GCST90018705", # Sakaue - east asian
   "GCST009916", # Onengut-Gumusc African
- # "GCST005536",
   "GCST008377", # Zhu east asian
   "GCST90000529", #Inshaw European
   # RA
   "GCST90132222", # all Ishigaki 
   "GCST90132223", # european Ishigaki 
   "GCST90132224", # east asian Ishigaki 
-
   "GCST011389", #Kwon  east asian 
- # "GCST90258644",
   "GCST90018690", # Sakaue  east asian 
  "GCST90446530" # Guo
   )
