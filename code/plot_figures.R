@@ -72,6 +72,7 @@ eqtl_enrich = eqtl_enrich |>
                col = as.factor(scent_tissue))) + 
     geom_point(size = 5,
                position = position_dodge(0.75)) +
+    ylim(0, 0.015) + 
     labs(y = "F1",
          x = "Study") + 
     facet_wrap(~eqtl_tissue, scales = "free_x") + 
@@ -167,6 +168,7 @@ plot = eqtl_enrich |>
              x = study, 
              group = scent_tissue,
              col = as.factor(scent_tissue))) + 
+  ylim(0, 0.05) + 
   geom_point(size = 5,
              position = position_dodge(0.75)) +
   labs(y = "Recall \n(Fine-mapped eQTLs)",
@@ -209,6 +211,13 @@ names(gwas_enrich) =
     "ntimes"
   )
 
+
+gwas_enrich = gwas_enrich |> 
+              dplyr::mutate(trait = dplyr::if_else(trait == "Insulin-dependent diabetes mellitus",
+                                                   "Type 1 diabetes",
+                                                   trait)
+              )
+
 }
 
 ################# Plot gwas enrichment #####################
@@ -232,7 +241,7 @@ plot  = gwas_enrich |>
   #             height = 0,
   #             width = 0.5
   #            ) + 
-  labs(y = "# Recalled \n (Genome-wide significant GWAS Variants)",
+  labs(y = "# Recalled \n (Genome-wide significant variants)",
        x = "Study") + 
   facet_wrap(~trait, scales = "free_x") + 
   scale_colour_brewer(name = "SCENT tissue", palette = "Dark2") + 
